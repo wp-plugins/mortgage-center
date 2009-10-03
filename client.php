@@ -1,0 +1,5 @@
+<?
+class MortgageCenter_Client {
+	
+}
+?>
