@@ -27,8 +27,8 @@ register_activation_hook(__FILE__, 'MortgageCenter::CreateOptions');
 
 class MortgageCenter {
 	function CreateOptions() {
-		add_option('mc-state', 'CA');
-		add_option('mc-url-slug', 'mortgage');
+		add_option('mortgage-center-state', 'CA');
+		add_option('mortgage-center-url-slug', 'mortgage');
 	}
 }
 ?>
