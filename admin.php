@@ -81,7 +81,7 @@ class MortgageCenter_Admin {
 			</ul>
 			<ul>
 				<li>
-					<label for="mc-url-slug">URL to load plugin</label>
+					<label for="mc-url-slug">Plugin URL</label>
 					<?= get_bloginfo('wpurl') ?><input type="text" id="mc-url-slug" name="url-slug" value="{$url_slug}" />
 				</li>
 			</ul>

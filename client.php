@@ -1,53 +1,61 @@
 <?
-add_filter('the_posts', array(&$this, 'MortgageCenter_Admin::AddMenu'));
-add_filter('wp_head', array(&$this, 'MortgageCenter_Admin::AddMenu'));
-add_filter('posts_request', array(&$this, 'MortgageCenter_Admin::AddMenu'));
-add_action('wp_footer', array(&$this, 'MortgageCenter_Admin::AddMenu'));
+add_filter('the_posts', 'MortgageCenter_Client::Activate');
+add_filter('posts_request', 'MortgageCenter_Client::ClearQuery');
+add_action('wp_head', 'MortgageCenter_Client::Header');
+add_action('wp_footer', 'MortgageCenter_Client::Footer');
 
 class MortgageCenter_Client {
 	public $IsActivated = false;
 	
-	function LoadClient($posts){
-		$blog_url = $GLOBALS['$wp']->request;
-		global $wp_query;
-
-		$cityStateRegex = "/". $this->slug ."\/((?P<neighborhood>[^\/]+)\/)?(?P<city>[^\/]+)\/(?P<state>\w{2})/";
-		$zipRegex = "/". $this->slug ."\/(?P<zip>\d{5})/";
-		$cityStateRegexSuccess = preg_match($cityStateRegex, $wp->request, $cityStateUrlMatch);
-		$zipRegexSuccess = preg_match($zipRegex, $wp->request, $zipUrlMatch);
+	function Activate($posts){
+		$blog_url = get_option('mortgage-center-url-slug');
 		
-		if ($cityStateRegexSuccess > 0) {
-			$this->city = trim(ucwords(str_replace('-', ' ', $cityStateUrlMatch['city'])));
-			$this->state = trim(strtoupper(str_replace('-', ' ', $cityStateUrlMatch['state'])));
-			
-			if ($cityStateUrlMatch['neighborhood'] != '') {
-				$this->neighborhood = trim(ucwords(str_replace('-', ' ', $cityStateUrlMatch['neighborhood'])));
-				$this->location_for_display = $this->neighborhood . ', ' . $this->city . ', ' . $this->state;
-			} else {
-				$this->location_for_display = $this->city . ', ' . $this->state;
-			}
-		} else if ($zipRegexSuccess > 0) {
-			$this->zip = $zipUrlMatch['zip'];
-			$this->location_for_display = $this->zip;
-		} else {
-			$this->is_lme = false;
+		if (!preg_match('^/{$blog_url}', $GLOBALS['wp']->request))
 			return $posts;
-		}
 		
-		$this->is_lme = true;
+		self::$IsActivated = true;
 		
-		$wp_query->is_page = true;
-		//Not sure if this one is necessary but might as well set it like a true page
-		$wp_query->is_single = true;
-		$wp_query->is_home = false;
-		$wp_query->is_archive = false;
-		//$wp_query->is_category = false;
-		//Longer permalink structures may not match the fake post slug and cause a 404 error so we catch the error here
-		unset($wp_query->query["error"]);
-		$wp_query->query_vars["error"]="";
-		$wp_query->is_404 = false;
+		remove_filter('the_content', 'wpautop'); // keep wordpress from mucking up our HTML
+		add_action('template_redirect', 'MortgageCenter_Client::OverrideTemplate');
 		
-		return $posts;
+		$formattedNow = date('Y-m-d H:i:s');
+		return array(
+			'ID'             => -1,
+			'comment_status' => 'closed',
+			'post_author'    => 0,
+			'post_content'   => self::LoadContent(),
+			'post_date'      => $formattedNow,
+			'post_date_gmt'  => $formattedNow,
+			'post_name'      => 'mortgage-center',
+			'post_status'    => 'publish',
+			'post_title'     => 'Mortgage Center',
+			'post_type'      => 'page'
+		);
+	}
+	function ClearQuery($query) {
+		if (self::$IsActivated)
+			return 'SELECT NULL WHERE 1 = 0';
+		else
+			return $query;
+	}
+	function OverrideTemplate() {
+		if (file_exists(TEMPLATEPATH . '/page.php'))
+			include(TEMPLATEPATH . '/page.php');
+		elseif (file_exists(TEMPLATEPATH . '/custom_template.php'))
+			include(TEMPLATEPATH . '/custom_template.php'); // this is for the Thesis theme
+		else
+			include(TEMPLATEPATH . '/post.php');
+		
+		exit;
+	}
+	function LoadContent() {
+		return '1';
+	}
+	function Header() {
+		
+	}
+	function Footer() {
+		
 	}
 }
 ?>
