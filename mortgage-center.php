@@ -25,13 +25,13 @@ Author: Andrew Mattie
 */
 register_activation_hook(__FILE__, 'MortgageCenter::CreateOptions');
 
-//if(is_admin())
-//	include('admin.php');
-//else
-//	include('client.php');
+if(is_admin())
+	include('mortgage-center-admin.php');
+else
+	include('mortgage-center-client.php');
 
 class MortgageCenter {
-	function CreateOptions() {
+	static function CreateOptions() {
 		add_option('mortgage-center-state', 'CA');
 		add_option('mortgage-center-url-slug', 'mortgage');
 	}

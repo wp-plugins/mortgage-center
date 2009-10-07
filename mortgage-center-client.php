@@ -5,9 +5,10 @@ add_action('wp_head', 'MortgageCenter_Client::Header');
 add_action('wp_footer', 'MortgageCenter_Client::Footer');
 
 class MortgageCenter_Client {
-	public $IsActivated = false;
+	static $IsActivated = false;
+	static $ZillowApiKey = 'X1-ZWz1c55uzwlk3v_6zfs6';
 	
-	function Activate($posts){
+	static function Activate($posts){
 		$blog_url = get_option('mortgage-center-url-slug');
 		
 		if (!preg_match('^/{$blog_url}', $GLOBALS['wp']->request))
@@ -32,13 +33,13 @@ class MortgageCenter_Client {
 			'post_type'      => 'page'
 		);
 	}
-	function ClearQuery($query) {
+	static function ClearQuery($query) {
 		if (self::$IsActivated)
 			return 'SELECT NULL WHERE 1 = 0';
 		else
 			return $query;
 	}
-	function OverrideTemplate() {
+	static function OverrideTemplate() {
 		if (file_exists(TEMPLATEPATH . '/page.php'))
 			include(TEMPLATEPATH . '/page.php');
 		elseif (file_exists(TEMPLATEPATH . '/custom_template.php'))
@@ -48,13 +49,13 @@ class MortgageCenter_Client {
 		
 		exit;
 	}
-	function LoadContent() {
+	static function LoadContent() {
 		return '1';
 	}
-	function Header() {
+	static function Header() {
 		
 	}
-	function Footer() {
+	static function Footer() {
 		
 	}
 }
