@@ -25,6 +25,7 @@ Author: Andrew Mattie
 */
 register_activation_hook(__FILE__, 'MortgageCenter::CreateOptions');
 
+include('mortgage-center-states.php');
 if(is_admin())
 	include('mortgage-center-admin.php');
 else
