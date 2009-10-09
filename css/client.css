@@ -66,7 +66,7 @@ div.mortgage-center-header-middle
 }
 
 /* CONTAINER */
-.mortgage-center-container
+.mortgage-center .mortgage-center-container
 {
     margin-top: 20px;
 }
@@ -85,7 +85,7 @@ div.mortgage-center-header-middle
 {
     height: 28px;
 }
-.mortgage-center-container-top h3
+.mortgage-center .mortgage-center-container-top h3
 {
     background-image: url(../images/container-middle-top.png);
     background-repeat: repeat-x;
@@ -114,8 +114,9 @@ div.mortgage-center-header-middle
     border-left: 1px solid #A1A1A1;
     border-right: 1px solid #A1A1A1;
     padding: 6px;
+	overflow: hidden;
 }
-.mortgage-center-container-bottom
+.mortgage-center .mortgage-center-container-bottom
 {
     border-bottom: 1px solid #A1A1A1;
     height: 8px;
@@ -156,6 +157,18 @@ div.mortgage-center-header-middle
     float: left;
     width: 50%;
     margin-top: 15px;
+}
+.mortgage-center table
+{
+	width: 100%;
+}
+.mortgage-center table td, .mortgage-center table th
+{
+	padding: 5px;
+}
+.mortgage-center table th
+{
+	text-align: center;
 }
 tr.mortgage-center-primary
 {
