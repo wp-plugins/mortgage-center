@@ -5,13 +5,17 @@ add_filter('posts_request', 'MortgageCenter_Client::ClearQuery');
 class MortgageCenter_Client {
 	static $IsActivated = false;
 	static $ZillowApiKey = 'X1-ZWz1c55uzwlk3v_6zfs6';
+	static $MortgageNewsSource = 'http://pipes.yahoo.com/pipes/pipe.run?_id=7c4d648c424678eb7374f68882f4dc08&_render=rss';
+	static $Options = null;
 	
 	static function Activate($posts){
 		global $MortgageCenter_States;
 		
-		$abbreviated_state = get_option('mortgage-center-state');
-		$mortgage_url = get_option('mortgage-center-url-slug');
-		$full_state = $MortgageCenter_States[$abbreviated_state];
+		self::$Options = array(
+			'state'      => get_option('mortgage-center-state'),
+			'url-slug'   => get_option('mortgage-center-url-slug')
+		);
+		$full_state = $MortgageCenter_States[self::$Options['state']];
 		
 		if (!preg_match("/{$mortgage_url}/", $GLOBALS['wp']->request))
 			return $posts;
@@ -21,7 +25,7 @@ class MortgageCenter_Client {
 		remove_filter('the_content', 'wpautop'); // keep wordpress from mucking up our HTML
 		add_action('template_redirect', 'MortgageCenter_Client::OverrideTemplate');
 		add_action('wp_head', 'MortgageCenter_Client::Header');
-		add_action('wp_footer', 'MortgageCenter_Client::Footer');
+		//add_action('wp_footer', 'MortgageCenter_Client::Footer'); // disclaimers?
 		wp_enqueue_script('jquery');
 		
 		$formattedNow = date('Y-m-d H:i:s');
@@ -55,7 +59,8 @@ class MortgageCenter_Client {
 		exit;
 	}
 	static function LoadContent() {
-				
+		$news = self::GetMortgageNews();
+		
 		return <<<HTML
 		<div class="mortgage-center">
 			<div class="mortgage-center-header">
@@ -115,6 +120,15 @@ class MortgageCenter_Client {
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div class="mortgage-center-container-body">
+					<form id="mortgage-center-calc-input">
+						<label for="mortgage-center-calc-hp">Home Price</label>
+						<input type="text" id="mortgage-center-calc-hp" />
+						<label for="mortgage-center-calc-pd">Percent Down (%)</label>
+						<input type="text" id="mortgage-center-calc-pd" />
+						<label for="mortgage-center-calc-zip">Zip</label>
+						<input type="text" id="mortgage-center-calc-zip" />
+						<input type="button" value="Calculate" id="mortgage-center-calc-submit" />
+					</form>
 					<table style="text-align: center;">
 						<tr>
 							<th>Loan Type</th>
@@ -163,40 +177,8 @@ class MortgageCenter_Client {
 					<h3>Closing.com Closing Cost Calculator</h3>
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
-				<div class="mortgage-center-container-body">
+				<div id="mortgage-center-cc-container" class="mortgage-center-container-body">
 					<div id="ccWidgetWrapper">
-					    <style>
-					        #ccWidgetWrapper
-					        {
-					            margin: 0;
-					            padding: 0;
-					            width: 420px;
-					            height: 590px;
-					            border: 6px solid #a8e1ff;
-					            padding: 2px;
-					            background-color: #86c1e0;
-					        }
-					        #ccWidgetFooter a
-					        {
-					            font-size: 9px;
-					            font-family: arial;
-					            text-decoration: none;
-					        }
-					        #ccWidgetFooter a:hover
-					        {
-					            text-decoration: underline;
-					        }
-					        #ccWidgetFooter p
-					        {
-					            font-size: 9px;
-					            font-family: arial;
-					        }
-					        #ccWidgetFooter h3
-					        {
-					            font-size: 9px;
-					            font-family: arial;
-					        }
-					    </style>
 					    <div id="ccSmartClosingCalculator">
 					        <div id="ccFlashPlaceholder">
 					            <p>
@@ -265,17 +247,17 @@ class MortgageCenter_Client {
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div class="mortgage-center-container-body">
-					<ul>
-						<li>FHA Loan</li>
-						<li>Refinancing</li>
-						<li>Home Equity Loan</li>
-						<li>Can You Afford a Mortgage?</li>
-						<li>Types of Mortgages</li>
-						<li>Mortgage Insurance</li>
-						<li>Finding Mortgages With Bad Credit</li>
-						<li>Understanding Fees and Closing Costs</li>
-						<li>Estimate Your Credit Score</li>
-						<li>What to Ask Mortgage Lenders</li>
+					<ul id="mortgage-center-articles">
+						<li><a href="">FHA Loan</a></li>
+						<li><a href="">Refinancing</a></li>
+						<li><a href="">Home Equity Loan</a></li>
+						<li><a href="">Can You Afford a Mortgage?</a></li>
+						<li><a href="">Types of Mortgages</a></li>
+						<li><a href="">Mortgage Insurance</a></li>
+						<li><a href="">Finding Mortgages With Bad Credit</a></li>
+						<li><a href="">Understanding Fees and Closing Costs</a></li>
+						<li><a href="">Estimate Your Credit Score</a></li>
+						<li><a href="">What to Ask Mortgage Lenders</a></li>
 					</ul>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
@@ -291,7 +273,7 @@ class MortgageCenter_Client {
 					<h3>Mortgage News</h3>
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
-				<div class="mortgage-center-container-body"></div>
+				<div class="mortgage-center-container-body">{$news}</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
 					<div class="mortgage-center-container-bottom-left mortgage-center-container-left"></div>
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
@@ -304,6 +286,32 @@ HTML;
 		echo <<<HEAD
 			<link rel="stylesheet" type="text/css" href="{$wpurl}/wp-content/plugins/mortgage-center/css/client.css" />
 HEAD;
+	}
+	static function GetMortgageNews()
+	{
+		include_once(ABSPATH . WPINC . '/feed.php');
+		
+		$news = fetch_feed(self::$MortgageNewsSource);
+		$news_items = $news->get_items();
+		
+		$news_html = '<ul>';
+	    foreach ($news_items as $news_item)
+		{
+	    	$title = $news_item->get_title();
+	    	$link = $news_item->get_permalink();
+			//$date = $news_item->get_date('j F Y | g:i a');
+			$source = $news_item->get_description();
+			 
+			$news_html .= <<<HTML
+			<li>
+				<a href="$link" title="$title">$title</a>
+				<span class="mortgage-center-news-source">$source</span>
+			</li>
+HTML;
+	    }
+		$news_html .= '</ul>';
+		
+		return $news_html;
 	}
 	static function Footer() {
 		

@@ -11,6 +11,11 @@
 .mortgage-center li
 {
     list-style: none;
+	text-indent: 0;
+}
+.mortgage-center li:before, .mortgage-center li:before
+{
+	content: "" !important;
 }
 .mortgage-center h1, .mortgage-center h2, .mortgage-center h3, .mortgage-center h4, .mortgage-center h5, .mortgage-center h6
 {
@@ -175,9 +180,77 @@ tr.mortgage-center-primary
 }
 tr.mortgage-center-secondary
 {
-    background-color: #F1F4FF;
+    background-color: #F2F7FF;
 }
 td.mortgage-center-primary-value
 {
     color: #C16D16;
 }
+
+/* MORTGAGE CALCULATOR */
+#mortgage-center-calc-input
+{
+	padding: 8px 8px;
+}
+#mortgage-center-calc-input label, #mortgage-center-calc-input input
+{
+	float: left;
+	margin-right: 10px;
+}
+#mortgage-center-calc-hp
+{
+	width: 30px;
+}
+#mortgage-center-calc-pd
+{
+	width: 30px;
+}
+#mortgage-center-calc-zip
+{
+	width: 30px;
+}
+input#mortgage-center-calc-submit
+{
+	margin: -3px 0 0;
+}
+
+/* CLOSING.COM COST CALCULATOR */
+#ccWidgetWrapper
+{
+    margin: 0 auto;
+    width: 420px;
+    height: 590px;
+    padding: 8px;
+}
+#ccWidgetFooter a
+{
+    font-size: 9px;
+    font-family: arial;
+    text-decoration: none;
+}
+#ccWidgetFooter a:hover
+{
+    text-decoration: underline;
+}
+#ccWidgetFooter p
+{
+    font-size: 9px;
+    font-family: arial;
+}
+#ccWidgetFooter h3
+{
+    font-size: 9px;
+    font-family: arial;
+}
+
+/* HELP */
+#mortgage-center-articles
+{
+}
+#mortgage-center-articles li
+{
+	float: left;
+	width: 45%;
+	list-style: disc;
+}
+
