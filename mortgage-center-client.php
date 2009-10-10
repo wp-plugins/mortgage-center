@@ -22,6 +22,7 @@ class MortgageCenter_Client {
 		add_action('template_redirect', 'MortgageCenter_Client::OverrideTemplate');
 		add_action('wp_head', 'MortgageCenter_Client::Header');
 		add_action('wp_footer', 'MortgageCenter_Client::Footer');
+		wp_enqueue_script('jquery');
 		
 		$formattedNow = date('Y-m-d H:i:s');
 		return array((object)array(
@@ -85,18 +86,18 @@ class MortgageCenter_Client {
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
-							<td id="mortgage-center-cur-30yf"></td>
-							<td id="mortgage-center-last-30yf"></td>
+							<td id="mortgage-center-rates-cur-30yf"></td>
+							<td id="mortgage-center-rates-last-30yf"></td>
 						</tr>
 						<tr>
 							<td>15 Year Fixed</td>
-							<td id="mortgage-center-cur-15yf"></td>
-							<td id="mortgage-center-last-15yf"></td>
+							<td id="mortgage-center-rates-cur-15yf"></td>
+							<td id="mortgage-center-rates-last-15yf"></td>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>5/1 ARM</td>
-							<td id="mortgage-center-cur-51arm"></td>
-							<td id="mortgage-center-last-51arm"></td>
+							<td id="mortgage-center-rates-cur-51arm"></td>
+							<td id="mortgage-center-rates-last-51arm"></td>
 						</tr>
 					</table>
 				</div>
@@ -125,27 +126,27 @@ class MortgageCenter_Client {
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td id="mortgage-center-calc-30yf-lt"></td>
+							<td id="mortgage-center-calc-30yf-mp"></td>
+							<td id="mortgage-center-calc-30yf-r"></td>
+							<td id="mortgage-center-calc-30yf-pi"></td>
+							<td id="mortgage-center-calc-30yf-t"></td>
 						</tr>
 						<tr>
 							<td>15 Year Fixed</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td id="mortgage-center-calc-15yf-lt"></td>
+							<td id="mortgage-center-calc-15yf-mp"></td>
+							<td id="mortgage-center-calc-15yf-r"></td>
+							<td id="mortgage-center-calc-15yf-pi"></td>
+							<td id="mortgage-center-calc-15yf-t"></td>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>5/1 ARM</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+							<td id="mortgage-center-calc-51arm-lt"></td>
+							<td id="mortgage-center-calc-51arm-mp"></td>
+							<td id="mortgage-center-calc-51arm-r"></td>
+							<td id="mortgage-center-calc-51arm-pi"></td>
+							<td id="mortgage-center-calc-51arm-t"></td>
 						</tr>
 					</table>
 				</div>
