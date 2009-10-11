@@ -285,6 +285,7 @@ HTML;
 	static function Header() {
 		echo <<<HEAD
 			<link rel="stylesheet" type="text/css" href="{$wpurl}/wp-content/plugins/mortgage-center/css/client.css" />
+			<script src="{$wpurl}/wp-content/plugins/mortgage-center/js/client.js"></script>
 HEAD;
 	}
 	static function GetMortgageNews()
@@ -305,7 +306,7 @@ HEAD;
 			$news_html .= <<<HTML
 			<li>
 				<a href="$link" title="$title">$title</a>
-				<span class="mortgage-center-news-source">$source</span>
+				<span class="mortgage-center-news-source">(via $source)</span>
 			</li>
 HTML;
 	    }

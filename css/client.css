@@ -253,4 +253,8 @@ input#mortgage-center-calc-submit
 	width: 45%;
 	list-style: disc;
 }
-
+.mortgage-center-news-source
+{
+	opacity: .8;
+	font-size: 11px; 
+}
