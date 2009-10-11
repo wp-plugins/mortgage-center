@@ -60,6 +60,7 @@ class MortgageCenter_Client {
 	}
 	static function LoadContent() {
 		$news = self::GetMortgageNews();
+		$url_slug = self::$Options['url-slug'];
 		
 		return <<<HTML
 		<div class="mortgage-center">
@@ -248,16 +249,16 @@ class MortgageCenter_Client {
 				</div>
 				<div class="mortgage-center-container-body">
 					<ul id="mortgage-center-articles">
-						<li><a href="">FHA Loan</a></li>
-						<li><a href="">Refinancing</a></li>
-						<li><a href="">Home Equity Loan</a></li>
-						<li><a href="">Can You Afford a Mortgage?</a></li>
-						<li><a href="">Types of Mortgages</a></li>
-						<li><a href="">Mortgage Insurance</a></li>
-						<li><a href="">Finding Mortgages With Bad Credit</a></li>
-						<li><a href="">Understanding Fees and Closing Costs</a></li>
-						<li><a href="">Estimate Your Credit Score</a></li>
-						<li><a href="">What to Ask Mortgage Lenders</a></li>
+						<li><a href="/$url_slug/fha-loan">FHA Loan</a></li>
+						<li><a href="/$url_slug/fha-loan">Refinancing</a></li>
+						<li><a href="/$url_slug/fha-loan">Home Equity Loan</a></li>
+						<li><a href="/$url_slug/can-you-afford-a-mortgage">Can You Afford a Mortgage?</a></li>
+						<li><a href="/$url_slug/fha-loan">Types of Mortgages</a></li>
+						<li><a href="/$url_slug/fha-loan">Mortgage Insurance</a></li>
+						<li><a href="/$url_slug/fha-loan">Finding Mortgages With Bad Credit</a></li>
+						<li><a href="/$url_slug/fha-loan">Understanding Fees and Closing Costs</a></li>
+						<li><a href="/$url_slug/fha-loan">Estimate Your Credit Score</a></li>
+						<li><a href="/$url_slug/fha-loan">What to Ask Mortgage Lenders</a></li>
 					</ul>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
