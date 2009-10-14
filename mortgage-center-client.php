@@ -7,6 +7,7 @@ class MortgageCenter_Client {
 	static $ZillowApiKey = 'X1-ZWz1c55uzwlk3v_6zfs6';
 	static $MortgageNewsSource = 'http://pipes.yahoo.com/pipes/pipe.run?_id=7c4d648c424678eb7374f68882f4dc08&_render=rss';
 	static $Options = null;
+	static $RequestedArticleName = null;
 	
 	static function Activate($posts){
 		global $MortgageCenter_States;
@@ -16,19 +17,29 @@ class MortgageCenter_Client {
 			'url-slug'   => get_option('mortgage-center-url-slug')
 		);
 		$full_state = $MortgageCenter_States[self::$Options['state']];
+		$wp_url = trim(get_bloginfo('wpurl'), '/') . '/' . self::$Options['url-slug'];
 		
-		if (!preg_match("/{$mortgage_url}/", $GLOBALS['wp']->request))
+		if (preg_match('/' . preg_quote($wp_url, '/') . '(?:\/(?P<article>[^\/]+))?/i', $_SERVER['SCRIPT_URI'], $activation_matches) == 0)
 			return $posts;
 		
 		self::$IsActivated = true;
+		self::$RequestedArticleName = $activation_matches['article'];
 		
 		remove_filter('the_content', 'wpautop'); // keep wordpress from mucking up our HTML
 		add_action('template_redirect', 'MortgageCenter_Client::OverrideTemplate');
 		add_action('wp_head', 'MortgageCenter_Client::Header');
-		//add_action('wp_footer', 'MortgageCenter_Client::Footer'); // disclaimers?
+		add_action('wp_footer', 'MortgageCenter_Client::Footer');
 		wp_enqueue_script('jquery');
 		
+		$post_title = $full_state . ' Mortgage Information';
 		$formattedNow = date('Y-m-d H:i:s');
+		
+		if (self::$RequestedArticleName) {
+			$article_contents = file_get_contents(ABSPATH . 'wp-content/plugins/mortgage-center/articles/' . self::$RequestedArticleName . '.html');
+			$article_content_lines = explode("\n", $article_contents, 2);
+			$post_title = $article_content_lines[0];
+		}
+		
 		return array((object)array(
 			'ID'             => -1,
 			'comment_status' => 'closed',
@@ -38,7 +49,7 @@ class MortgageCenter_Client {
 			'post_date_gmt'  => $formattedNow,
 			'post_name'      => 'mortgage-center',
 			'post_status'    => 'publish',
-			'post_title'     => $full_state . ' Mortgage Information',
+			'post_title'     => $post_title,
 			'post_type'      => 'page'
 		));
 	}
@@ -64,6 +75,11 @@ class MortgageCenter_Client {
 		$zillowApiKey = self::$ZillowApiKey;
 		$stateAbbrev = self::$Options['state'];
 		
+		if (self::$RequestedArticleName)
+			$content = self::LoadContentNews();
+		else
+			$content = self::LoadContentPrimary();
+		
 		return <<<HTML
 		<script>
 			MortgageCenter.zillowApiKey = '{$zillowApiKey}';
@@ -73,15 +89,23 @@ class MortgageCenter_Client {
 			<div class="mortgage-center-header">
 				<div class="mortgage-center-header-left"></div>
 				<div class="mortgage-center-header-middle">
-					<a href="#mc-rates">Rates</a> |
-					<a href="#mc-monthly-payments">Monthly Payments</a> |
-					<a href="#mc-closing-costs">Closing Costs</a> |
-					<a href="#mc-help">Help</a> |
-					<a href="#mc-news">News</a>
+					<a href="/$url_slug/#mc-rates">Rates</a> |
+					<a href="/$url_slug/#mc-monthly-payments">Monthly Payments</a> |
+					<a href="/$url_slug/#mc-closing-costs">Closing Costs</a> |
+					<a href="/$url_slug/#mc-help">Help</a> |
+					<a href="/$url_slug/#mc-news">News</a>
 				</div>
 				<div class="mortgage-center-header-right"></div>
 			</div>
-			
+			$content
+		</div>
+HTML;
+	}
+	static function LoadContentPrimary()
+	{
+		$url_slug = self::$Options['url-slug'];
+		
+		return <<<HTML
 			<a name="mc-rates"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -128,22 +152,22 @@ class MortgageCenter_Client {
 				</div>
 				<div class="mortgage-center-container-body">
 					<form id="mortgage-center-calc-input">
-						<label for="mortgage-center-calc-hp">Home Price</label>
-						<input type="text" id="mortgage-center-calc-hp" />
-						<label for="mortgage-center-calc-pd">Percent Down (%)</label>
-						<input type="text" id="mortgage-center-calc-pd" />
-						<label for="mortgage-center-calc-zip">Zip</label>
-						<input type="text" id="mortgage-center-calc-zip" />
+						<label for="mortgage-center-calc-hp">Home Price:</label>
+						<input type="text" id="mortgage-center-calc-hp" style="width: 60px;" />
+						<label for="mortgage-center-calc-pd">Percent Down:</label>
+						<input type="text" id="mortgage-center-calc-pd" style="width: 20px;" />
+						<label for="mortgage-center-calc-zip">Zip:</label>
+						<input type="text" id="mortgage-center-calc-zip" style="width: 40px;" />
 						<input type="button" value="Calculate" id="mortgage-center-calc-submit" />
 					</form>
-					<table style="text-align: center;">
+					<table id="mortgage-center-calculator-table" style="text-align: center; display: none;">
 						<tr>
 							<th>Loan Type</th>
 							<th>Monthly Payment</th>
 							<th>Rate</th>
 							<th>Principal & Interest</th>
-							<th>Insurance</th>
-							<th>Tax</th>
+							<th>Mortgage Insurance</th>
+							<th>Property Tax</th>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
@@ -256,15 +280,14 @@ class MortgageCenter_Client {
 				<div class="mortgage-center-container-body">
 					<ul id="mortgage-center-articles">
 						<li><a href="/$url_slug/fha-loan">FHA Loan</a></li>
-						<li><a href="/$url_slug/fha-loan">Refinancing</a></li>
-						<li><a href="/$url_slug/fha-loan">Home Equity Loan</a></li>
+						<li><a href="/$url_slug/refinancing">Refinancing</a></li>
+						<li><a href="/$url_slug/home-equity-loan">Home Equity Loan</a></li>
 						<li><a href="/$url_slug/can-you-afford-a-mortgage">Can You Afford a Mortgage?</a></li>
-						<li><a href="/$url_slug/fha-loan">Types of Mortgages</a></li>
-						<li><a href="/$url_slug/fha-loan">Mortgage Insurance</a></li>
-						<li><a href="/$url_slug/fha-loan">Finding Mortgages With Bad Credit</a></li>
-						<li><a href="/$url_slug/fha-loan">Understanding Fees and Closing Costs</a></li>
-						<li><a href="/$url_slug/fha-loan">Estimate Your Credit Score</a></li>
-						<li><a href="/$url_slug/fha-loan">What to Ask Mortgage Lenders</a></li>
+						<li><a href="/$url_slug/types-of-mortgages">Types of Mortgages</a></li>
+						<li><a href="/$url_slug/mortgage-insurance">Mortgage Insurance</a></li>
+						<li><a href="/$url_slug/finding-mortgages-with-bad-credit">Finding Mortgages With Bad Credit</a></li>
+						<li><a href="/$url_slug/understanding-fees-and-closing-costs">Understanding Fees and Closing Costs</a></li>
+						<li><a href="/$url_slug/what-to-ask-mortgage-lenders">What to Ask Mortgage Lenders</a></li>
 					</ul>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
@@ -286,14 +309,13 @@ class MortgageCenter_Client {
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
 				</div>
 			</div>
-		</div>
 HTML;
 	}
-	static function Header() {
-		echo <<<HEAD
-			<link rel="stylesheet" type="text/css" href="{$wpurl}/wp-content/plugins/mortgage-center/css/client.css" />
-			<script src="{$wpurl}/wp-content/plugins/mortgage-center/js/client.js"></script>
-HEAD;
+	static function LoadContentNews()
+	{
+		$article_contents = file_get_contents(ABSPATH . 'wp-content/plugins/mortgage-center/articles/' . self::$RequestedArticleName . '.html');
+		$article_content_lines = explode("\n", $article_contents, 2);
+		return $article_content_lines[1];
 	}
 	static function GetMortgageNews()
 	{
@@ -321,8 +343,18 @@ HTML;
 		
 		return $news_html;
 	}
+	static function Header() {
+		echo <<<HEAD
+			<link rel="stylesheet" type="text/css" href="{$wpurl}/wp-content/plugins/mortgage-center/css/client.css" />
+			<script src="{$wpurl}/wp-content/plugins/mortgage-center/js/client.js"></script>
+HEAD;
+	}
 	static function Footer() {
-		
+		$current_year = date('Y');
+		echo <<<FOOTER
+			<p>&copy; Zillow, Inc., {$current_year}. Use is subject to <a href="http://www.zillow.com/corp/Terms.htm#scid=gen-api-wplugin" target="_blank">Terms of Use</a>.</p>
+FOOTER;
+		return $content;
 	}
 }
 ?>

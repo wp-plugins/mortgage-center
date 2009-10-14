@@ -36,6 +36,16 @@
 {
     margin-top: 5px;
 }
+.mortgage-center p
+{
+    margin: 15px 0;
+}
+.mortgage-center h2
+{
+    margin: 20px 0 5px 0;
+	font-weight: bold;
+	font-size: 14px;
+}
 
 /* HEADER */
 .mortgage-center-header
@@ -200,7 +210,7 @@ td.mortgage-center-primary-value
 #mortgage-center-calc-input label, #mortgage-center-calc-input input
 {
 	float: left;
-	margin-right: 10px;
+	margin-right: 6px;
 }
 #mortgage-center-calc-hp
 {
