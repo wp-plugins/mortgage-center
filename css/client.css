@@ -77,7 +77,12 @@ div.mortgage-center-header-middle
 {
 	float: right;
 	font-size: 9px;
+	margin-top: 7px;
 	text-align: right;
+}
+#mortgage-center-powered-by img
+{
+	vertical-align: bottom;
 }
 .mortgage-center-header-right
 {

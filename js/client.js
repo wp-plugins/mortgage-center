@@ -19,7 +19,7 @@ MortgageCenter = (function() {
 		});
 	}
 	function calculatePayment() {
-		$('#mortgage-center-calculator-table').css('display', 'none');
+		$('.mortgage-center-calc-value').html('...');
 		$.ajax({
 			url: 'http://www.zillow.com/webservice/GetMonthlyPayments.htm',
 			type: 'GET',

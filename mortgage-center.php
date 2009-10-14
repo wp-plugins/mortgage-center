@@ -33,8 +33,10 @@ else
 
 class MortgageCenter {
 	static function CreateOptions() {
-		add_option('mortgage-center-state', 'CA');
 		add_option('mortgage-center-url-slug', 'mortgage');
+		add_option('mortgage-center-calc-price', '300000');
+		add_option('mortgage-center-calc-down', '20');
+		add_option('mortgage-center-calc-zip', '98014');
 	}
 }
 ?>

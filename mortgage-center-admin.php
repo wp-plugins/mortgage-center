@@ -8,6 +8,10 @@ class MortgageCenter_Admin {
 	static function SavePostedData() {
 		update_option('mortgage-center-state', $_POST['mc-state']);
 		update_option('mortgage-center-url-slug', $_POST['mc-url-slug']);
+		update_option('mortgage-center-zillow-profile-name', $_POST['mc-zillow-profile-name']);
+		update_option('mortgage-center-calc-price', $_POST['mc-calc-price']);
+		update_option('mortgage-center-calc-down', $_POST['mc-calc-down']);
+		update_option('mortgage-center-calc-zip', $_POST['mc-calc-zip']);
 	}
 	static function Initialize() {
 ?>
@@ -27,6 +31,10 @@ class MortgageCenter_Admin {
 		global $MortgageCenter_States;
 		$saved_state = get_option('mortgage-center-state');
 		$saved_url_slug = get_option('mortgage-center-url-slug');
+		$saved_zillow_name = get_option('mortgage-center-zillow-profile-name');
+		$saved_calc_price = get_option('mortgage-center-calc-price');
+		$saved_calc_down = get_option('mortgage-center-calc-down');
+		$saved_calc_zip = get_option('mortgage-center-calc-zip');
 ?>
 		<form method="post">
 			<table class="form-table">
@@ -50,6 +58,24 @@ class MortgageCenter_Admin {
 					</th>
 					<td>
 						<?= get_bloginfo('wpurl') ?>/<input type="text" id="mc-url-slug" name="mc-url-slug" value="<?= $saved_url_slug ?>" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="mc-url-slug">Zillow profile name</label>
+					</th>
+					<td>
+						<input type="text" id="mc-zillow-profile-name" name="mc-zillow-profile-name" value="<?= $saved_zillow_name ?>" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label>Mortgage calculator defaults</label>
+					</th>
+					<td>
+						Price: <input type="text" id="mc-calc-price" name="mc-calc-price" value="<?= $saved_calc_price ?>" style="width: 70px; margin-right: 10px;" />
+						Percent down: <input type="text" id="mc-calc-down" name="mc-calc-down" value="<?= $saved_calc_down ?>" style="width: 30px; margin-right: 10px;" />
+						Zip: <input type="text" id="mc-calc-zip" name="mc-calc-zip" value="<?= $saved_calc_zip ?>" style="width: 50px;" />
 					</td>
 				</tr>
 			</table>

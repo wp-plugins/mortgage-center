@@ -13,13 +13,15 @@ class MortgageCenter_Client {
 		global $MortgageCenter_States;
 		
 		self::$Options = array(
-			'state'      => get_option('mortgage-center-state'),
-			'url-slug'   => get_option('mortgage-center-url-slug')
+			'state'					=> get_option('mortgage-center-state'),
+			'url-slug'				=> get_option('mortgage-center-url-slug'),
+			'zillow-profile-name'	=> get_option('mortgage-center-zillow-profile-name'),
+			'calc-price'			=> get_option('mortgage-center-calc-price'),
+			'calc-down'				=> get_option('mortgage-center-calc-down'),
+			'calc-zip'				=> get_option('mortgage-center-calc-zip')
 		);
-		$full_state = $MortgageCenter_States[self::$Options['state']];
-		$wp_url = trim(get_bloginfo('wpurl'), '/') . '/' . self::$Options['url-slug'];
 		
-		if (preg_match('/' . preg_quote($wp_url, '/') . '(?:\/(?P<article>[^\/]+))?/i', $_SERVER['SCRIPT_URI'], $activation_matches) == 0)
+		if (preg_match('/' . preg_quote(self::$Options['url-slug'], '/') . '(?:\/(?P<article>[^\/]+))?\/?$/i', $_SERVER['REQUEST_URI'], $activation_matches) == 0)
 			return $posts;
 		
 		self::$IsActivated = true;
@@ -31,7 +33,10 @@ class MortgageCenter_Client {
 		add_action('wp_footer', 'MortgageCenter_Client::Footer');
 		wp_enqueue_script('jquery');
 		
-		$post_title = $full_state . ' Mortgage Information';
+		if (!self::$Options['state'])
+			$post_title = 'National Mortgage Information';
+		else
+			$post_title = $MortgageCenter_States[self::$Options['state']] . ' Mortgage Information';
 		$formattedNow = date('Y-m-d H:i:s');
 		
 		if (self::$RequestedArticleName) {
@@ -41,16 +46,16 @@ class MortgageCenter_Client {
 		}
 		
 		return array((object)array(
-			'ID'             => -1,
-			'comment_status' => 'closed',
-			'post_author'    => 0,
-			'post_content'   => self::LoadContent(),
-			'post_date'      => $formattedNow,
-			'post_date_gmt'  => $formattedNow,
-			'post_name'      => 'mortgage-center',
-			'post_status'    => 'publish',
-			'post_title'     => $post_title,
-			'post_type'      => 'page'
+			'ID'				=> -1,
+			'comment_status'	=> 'closed',
+			'post_author'		=> 0,
+			'post_content'		=> self::LoadContent(),
+			'post_date'			=> $formattedNow,
+			'post_date_gmt'		=> $formattedNow,
+			'post_name'			=> 'mortgage-center',
+			'post_status'		=> 'publish',
+			'post_title'		=> $post_title,
+			'post_type'			=> 'page'
 		));
 	}
 	static function ClearQuery($query) {
@@ -70,11 +75,14 @@ class MortgageCenter_Client {
 		exit;
 	}
 	static function LoadContent() {
-		$news = self::GetMortgageNews();
 		$zillowApiKey = self::$ZillowApiKey;
 		$stateAbbrev = self::$Options['state'];
 		$url_slug = self::$Options['url-slug'];
 		$blog_url = get_bloginfo('wpurl');
+		$zillow_profile_hash = '';
+		
+		if (self::$Options['zillow-profile-name'])
+			$zillow_profile_hash = '#{scrnnm=' . self::$Options['zillow-profile-name'] . '}';
 		
 		if (self::$RequestedArticleName)
 			$content = self::LoadContentNews();
@@ -97,8 +105,7 @@ class MortgageCenter_Client {
 					<a href="/$url_slug/#mc-news">News</a>
 					<div id="mortgage-center-powered-by">
 						powered by
-						<br />
-						<a href="http://www.zillow.com/mortgage"><img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgages" /></a>
+						<a href="http://www.zillow.com/mortgage$zillow_profile_hash"><img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgages" /></a>
 					</div>
 				</div>
 				<div class="mortgage-center-header-right"></div>
@@ -112,8 +119,25 @@ HTML;
 		global $MortgageCenter_States;
 		
 		$url_slug = self::$Options['url-slug'];
-		$full_state = $MortgageCenter_States[self::$Options['state']];
-		$full_state_for_link = str_replace(' ', '_', $full_state);
+		$news = self::GetMortgageNews();
+		$zillow_profile_hash = '';
+		$calc_price = self::$Options['calc-price'];
+		$calc_down = self::$Options['calc-down'];
+		$calc_zip = self::$Options['calc-zip'];
+		
+		if (self::$Options['zillow-profile-name'])
+			$zillow_profile_hash = '#{scrnnm=' . self::$Options['zillow-profile-name'] . '}';
+		
+		if (self::$Options['state'])
+		{
+			$full_state = $MortgageCenter_States[self::$Options['state']];
+			$full_state_for_link = str_replace(' ', '_', $full_state) + '_';
+		}
+		else
+		{
+			$full_state = 'National';
+			$full_state_for_link = '';
+		}
 		
 		return <<<HTML
 			<a name="mc-rates"></a>
@@ -147,7 +171,7 @@ HTML;
 						</tr>
 					</table>
 					<div id="mortgage-center-compare-rates" class="mortgage-center-branding-link">
-						<a href="http://www.zillow.com/{$full_state_for_link}_Mortgage_Rates/">Compare $full_state Mortgage Rates</a> 
+						<a href="http://www.zillow.com/{$full_state_for_link}Mortgage_Rates/$zillow_profile_hash">Compare $full_state Mortgage Rates</a> 
 					</div>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
@@ -162,18 +186,18 @@ HTML;
 					<div class="mortgage-center-container-top-left mortgage-center-container-left"></div>
 					<h3>Calculate Your Monthly Payment</h3>
 					<div id="mortgage-center-more-calculators">
-						<a href="http://www.zillow.com/mortgage/calculator/Calculators.htm">More Mortgage Calculators</a>
+						<a href="http://www.zillow.com/mortgage/calculator/Calculators.htm$zillow_profile_hash">More Mortgage Calculators</a>
 					</div>
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div class="mortgage-center-container-body">
 					<form id="mortgage-center-calc-input">
 						<label for="mortgage-center-calc-hp">Home Price:</label>
-						<input type="text" id="mortgage-center-calc-hp" style="width: 60px;" />
+						<input type="text" id="mortgage-center-calc-hp" style="width: 60px;" value="$calc_price" />
 						<label for="mortgage-center-calc-pd">Percent Down:</label>
-						<input type="text" id="mortgage-center-calc-pd" style="width: 20px;" />
+						<input type="text" id="mortgage-center-calc-pd" style="width: 20px;" value="$calc_down" />
 						<label for="mortgage-center-calc-zip">Zip:</label>
-						<input type="text" id="mortgage-center-calc-zip" style="width: 40px;" />
+						<input type="text" id="mortgage-center-calc-zip" style="width: 40px;" value="$calc_zip" />
 						<input type="button" value="Calculate" id="mortgage-center-calc-submit" />
 					</form>
 					<table id="mortgage-center-calculator-table" style="text-align: center; display: none;">
@@ -187,32 +211,32 @@ HTML;
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
-							<td id="mortgage-center-calc-30yf-mp"></td>
-							<td id="mortgage-center-calc-30yf-r"></td>
-							<td id="mortgage-center-calc-30yf-pi"></td>
-							<td id="mortgage-center-calc-30yf-i"></td>
-							<td id="mortgage-center-calc-30yf-t"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-30yf-mp"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-30yf-r"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-30yf-pi"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-30yf-i"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-30yf-t"></td>
 						</tr>
 						<tr>
 							<td>15 Year Fixed</td>
-							<td id="mortgage-center-calc-15yf-mp"></td>
-							<td id="mortgage-center-calc-15yf-r"></td>
-							<td id="mortgage-center-calc-15yf-pi"></td>
-							<td id="mortgage-center-calc-15yf-i"></td>
-							<td id="mortgage-center-calc-15yf-t"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-15yf-mp"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-15yf-r"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-15yf-pi"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-15yf-i"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-15yf-t"></td>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>5/1 ARM</td>
-							<td id="mortgage-center-calc-51arm-mp"></td>
-							<td id="mortgage-center-calc-51arm-r"></td>
-							<td id="mortgage-center-calc-51arm-pi"></td>
-							<td id="mortgage-center-calc-51arm-i"></td>
-							<td id="mortgage-center-calc-51arm-t"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-51arm-mp"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-51arm-r"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-51arm-pi"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-51arm-i"></td>
+							<td class="mortgage-center-calc-value" id="mortgage-center-calc-51arm-t"></td>
 						</tr>
 					</table>
 					<div class="clear"></div>
 					<div id="mortgage-center-compare-rates" class="mortgage-center-branding-link">
-						<a href="http://www.zillow.com/mortgage/">Shop for Mortgage Loans</a> 
+						<a href="http://www.zillow.com/mortgage/$zillow_profile_hash">Shop for Mortgage Loans</a> 
 					</div>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
@@ -230,57 +254,57 @@ HTML;
 				</div>
 				<div id="mortgage-center-cc-container" class="mortgage-center-container-body">
 					<div id="ccWidgetWrapper">
-					    <div id="ccSmartClosingCalculator">
-					        <div id="ccFlashPlaceholder">
-					            <p>
-					                To use the <em>Smart</em>Closing™ Calculator, please install Flash Player for your
-					                browser by clicking the button below.
-					            </p>
-					            <p>
-					                <a href="http://www.adobe.com/go/getflashplayer">
-					                    <img alt="Get Adobe Flash player" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" />
-					                </a>
-					            </p>
-					        </div>
-					    </div>
+						<div id="ccSmartClosingCalculator">
+							<div id="ccFlashPlaceholder">
+								<p>
+									To use the <em>Smart</em>Closing™ Calculator, please install Flash Player for your
+									browser by clicking the button below.
+								</p>
+								<p>
+									<a href="http://www.adobe.com/go/getflashplayer">
+										<img alt="Get Adobe Flash player" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" />
+									</a>
+								</p>
+							</div>
+						</div>
 					
-					    <script src="http://yui.yahooapis.com/2.8.0r4/build/yuiloader/yuiloader-min.js" type="text/javascript"></script>
+						<script src="http://yui.yahooapis.com/2.8.0r4/build/yuiloader/yuiloader-min.js" type="text/javascript"></script>
 					
-					    <script type="text/javascript">
+						<script type="text/javascript">
 						  //<![CDATA[
-						    var ccAutoloadJsOptions = { file: ["cc.widget.calculator.js"], 
-						    	onSuccess: function() { 
-						    		CC.widget.calculator("narrow", "ccFlashPlaceholder", {
-						    			dataService_apiKey: "AF6DD2F8-ADE8-11DE-A322-202E56D89593"
-						    		});
-						    	}
-						    };
+							var ccAutoloadJsOptions = { file: ["cc.widget.calculator.js"], 
+								onSuccess: function() { 
+									CC.widget.calculator("narrow", "ccFlashPlaceholder", {
+										dataService_apiKey: "AF6DD2F8-ADE8-11DE-A322-202E56D89593"
+									});
+								}
+							};
 						  //]]>
-					    </script>
+						</script>
 					
-					    <script src="http://www.closing.com/partner/assets/js/cc/cc.js" type="text/javascript"></script>
+						<script src="http://www.closing.com/partner/assets/js/cc/cc.js" type="text/javascript"></script>
 					
-					    <div id="ccWidgetFooter">
-					        <h3>
-					            <a href="http://www.closing.com">Closing.com"s</a> Disclaimer</h3>
-					        <p>
-					            Though ClosingCorp makes certain efforts to ensure that the results, rates, estimates,
-					            reports, and other data made available on our site and through our services are
-					            reasonably accurate and reliable for their intended purposes, <strong>SUCH INFORMATION
-					                IS NOT GUARANTEED</strong> and may be subject to other terms and conditions.
-					            Neither ClosingCorp nor any authorized licensees of our services and content assume
-					            responsibility for the accuracy, timeliness, correctness, or completeness of such
-					            estimates, reports, or information, virtually all of which is originated by others.</p>
-					        <p>
-					            As a service to our users, Closing.com incorporates rate, mortgage, and other calculators
-					            on certain of its pages. The results and reports provided by these calculators are
-					            intended for hypothetical, illustrative, and comparative purposes only. Calculators
-					            are not intended to offer any tax, legal, or financial advice and <strong>ALL INFORMATION,
-					                REPORTS, AND ESTIMATES PROVIDED ARE WITHOUT REPRESENTATION OR WARRANTY AS TO THEIR
-					                RELEVANCE, ACCURACY, CORRECTNESS, OR COMPLETENESS</strong>. Please consult with
-					            qualified professionals to discuss your situation. <a href="http://www.closing.com/Home/Disclaimer">
-					                More</a></p>
-					    </div>
+						<div id="ccWidgetFooter">
+							<h3>
+								<a href="http://www.closing.com">Closing.com"s</a> Disclaimer</h3>
+							<p>
+								Though ClosingCorp makes certain efforts to ensure that the results, rates, estimates,
+								reports, and other data made available on our site and through our services are
+								reasonably accurate and reliable for their intended purposes, <strong>SUCH INFORMATION
+									IS NOT GUARANTEED</strong> and may be subject to other terms and conditions.
+								Neither ClosingCorp nor any authorized licensees of our services and content assume
+								responsibility for the accuracy, timeliness, correctness, or completeness of such
+								estimates, reports, or information, virtually all of which is originated by others.</p>
+							<p>
+								As a service to our users, Closing.com incorporates rate, mortgage, and other calculators
+								on certain of its pages. The results and reports provided by these calculators are
+								intended for hypothetical, illustrative, and comparative purposes only. Calculators
+								are not intended to offer any tax, legal, or financial advice and <strong>ALL INFORMATION,
+									REPORTS, AND ESTIMATES PROVIDED ARE WITHOUT REPRESENTATION OR WARRANTY AS TO THEIR
+									RELEVANCE, ACCURACY, CORRECTNESS, OR COMPLETENESS</strong>. Please consult with
+								qualified professionals to discuss your situation. <a href="http://www.closing.com/Home/Disclaimer">
+									More</a></p>
+						</div>
 					</div>
 	
 				</div>
@@ -345,10 +369,10 @@ HTML;
 		$news_items = $news->get_items();
 		
 		$news_html = '<ul>';
-	    foreach ($news_items as $news_item)
+		foreach ($news_items as $news_item)
 		{
-	    	$title = $news_item->get_title();
-	    	$link = $news_item->get_permalink();
+			$title = $news_item->get_title();
+			$link = $news_item->get_permalink();
 			//$date = $news_item->get_date('j F Y | g:i a');
 			$source = $news_item->get_description();
 			 
@@ -358,7 +382,7 @@ HTML;
 				<span class="mortgage-center-news-source">(via $source)</span>
 			</li>
 HTML;
-	    }
+		}
 		$news_html .= '</ul>';
 		
 		return $news_html;
@@ -371,8 +395,13 @@ HEAD;
 	}
 	static function Footer() {
 		$current_year = date('Y');
+		$zillow_profile_hash = '';
+		
+		if (self::$Options['zillow-profile-name'])
+			$zillow_profile_hash = '#{scrnnm=' . self::$Options['zillow-profile-name'] . '}';
+		
 		echo <<<FOOTER
-			<p>&copy; Zillow, Inc., {$current_year}. Use is subject to <a href="http://www.zillow.com/corp/Terms.htm#scid=gen-api-wplugin" target="_blank">Terms of Use</a>.</p>
+			<p>&copy; Zillow, Inc., {$current_year}. Use is subject to <a href="http://www.zillow.com/corp/Terms.htm$zillow_profile_hash" target="_blank">Terms of Use</a>.</p>
 FOOTER;
 		return $content;
 	}

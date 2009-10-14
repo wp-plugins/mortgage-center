@@ -1,5 +1,6 @@
 <?
 $MortgageCenter_States = array(
+	''   => '- National -',
 	'AL' => 'Alabama',
 	'AK' => 'Alaska',
 	'AZ' => 'Arizona',
