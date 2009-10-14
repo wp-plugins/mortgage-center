@@ -61,8 +61,14 @@ class MortgageCenter_Client {
 	static function LoadContent() {
 		$news = self::GetMortgageNews();
 		$url_slug = self::$Options['url-slug'];
+		$zillowApiKey = self::$ZillowApiKey;
+		$stateAbbrev = self::$Options['state'];
 		
 		return <<<HTML
+		<script>
+			MortgageCenter.zillowApiKey = '{$zillowApiKey}';
+			MortgageCenter.state = '{$stateAbbrev}';
+		</script>
 		<div class="mortgage-center">
 			<div class="mortgage-center-header">
 				<div class="mortgage-center-header-left"></div>
@@ -92,18 +98,18 @@ class MortgageCenter_Client {
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
-							<td id="mortgage-center-rates-cur-30yf"></td>
-							<td id="mortgage-center-rates-last-30yf"></td>
+							<td id="mortgage-center-rates-cur-30yf" class="mortgage-center-rate"></td>
+							<td id="mortgage-center-rates-last-30yf" class="mortgage-center-rate"></td>
 						</tr>
 						<tr>
 							<td>15 Year Fixed</td>
-							<td id="mortgage-center-rates-cur-15yf"></td>
-							<td id="mortgage-center-rates-last-15yf"></td>
+							<td id="mortgage-center-rates-cur-15yf" class="mortgage-center-rate"></td>
+							<td id="mortgage-center-rates-last-15yf" class="mortgage-center-rate"></td>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>5/1 ARM</td>
-							<td id="mortgage-center-rates-cur-51arm"></td>
-							<td id="mortgage-center-rates-last-51arm"></td>
+							<td id="mortgage-center-rates-cur-51arm" class="mortgage-center-rate"></td>
+							<td id="mortgage-center-rates-last-51arm" class="mortgage-center-rate"></td>
 						</tr>
 					</table>
 				</div>
@@ -141,26 +147,26 @@ class MortgageCenter_Client {
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>30 Year Fixed</td>
-							<td id="mortgage-center-calc-30yf-lt"></td>
 							<td id="mortgage-center-calc-30yf-mp"></td>
 							<td id="mortgage-center-calc-30yf-r"></td>
 							<td id="mortgage-center-calc-30yf-pi"></td>
+							<td id="mortgage-center-calc-30yf-i"></td>
 							<td id="mortgage-center-calc-30yf-t"></td>
 						</tr>
 						<tr>
 							<td>15 Year Fixed</td>
-							<td id="mortgage-center-calc-15yf-lt"></td>
 							<td id="mortgage-center-calc-15yf-mp"></td>
 							<td id="mortgage-center-calc-15yf-r"></td>
 							<td id="mortgage-center-calc-15yf-pi"></td>
+							<td id="mortgage-center-calc-15yf-i"></td>
 							<td id="mortgage-center-calc-15yf-t"></td>
 						</tr>
 						<tr class="mortgage-center-secondary">
 							<td>5/1 ARM</td>
-							<td id="mortgage-center-calc-51arm-lt"></td>
 							<td id="mortgage-center-calc-51arm-mp"></td>
 							<td id="mortgage-center-calc-51arm-r"></td>
 							<td id="mortgage-center-calc-51arm-pi"></td>
+							<td id="mortgage-center-calc-51arm-i"></td>
 							<td id="mortgage-center-calc-51arm-t"></td>
 						</tr>
 					</table>

@@ -187,6 +187,11 @@ td.mortgage-center-primary-value
     color: #C16D16;
 }
 
+/* RATES */
+.mortgage-center-rate
+{
+	text-align: center;
+}
 /* MORTGAGE CALCULATOR */
 #mortgage-center-calc-input
 {
