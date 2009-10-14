@@ -98,6 +98,7 @@ MortgageCenter = (function() {
 	$(getRates);
 	$(function() {
 		$('#mortgage-center-calc-submit').click(calculatePayment);
+		$('#mortgage-center-calc-submit').click();
 	});
 	return returnObj;
 })();
