@@ -40,17 +40,21 @@
 {
     margin: 15px 0;
 }
-.mortgage-center h2
+.mortgage-center h2, .mortgage-center h3
 {
     margin: 20px 0 5px 0;
 	font-weight: bold;
 	font-size: 14px;
 }
+.mortgage-center dd
+{
+	margin-left: 20px;
+}
 
 /* HEADER */
 .mortgage-center-header
 {
-    height: 50px;
+    height: 68px;
 	position: relative;
 }
 .mortgage-center-header-left
@@ -58,16 +62,22 @@
     background-image: url(../images/header.png);
     float: left;
     width: 11px;
-    height: 50px;
+    height: 68px;
 }
 div.mortgage-center-header-middle
 {
     background-image: url(../images/header-middle.png);
     background-repeat: repeat-x;
-    height: 43px;
+    height: 61px;
     margin: 0 11px;
     padding: 15px 11px 0 0;
     text-align: center;
+}
+#mortgage-center-powered-by
+{
+	float: right;
+	font-size: 9px;
+	text-align: right;
 }
 .mortgage-center-header-right
 {
@@ -75,7 +85,7 @@ div.mortgage-center-header-middle
     background-position: 11px 0;
     position: absolute;
     width: 11px;
-    height: 50px;
+    height: 68px;
     top: 0;
     right: 0;
 }
@@ -196,6 +206,10 @@ td.mortgage-center-primary-value
 {
     color: #C16D16;
 }
+div.mortgage-center-branding-link
+{
+	margin: 15px 0 0 8px;
+}
 
 /* RATES */
 .mortgage-center-rate
@@ -203,6 +217,17 @@ td.mortgage-center-primary-value
 	text-align: center;
 }
 /* MORTGAGE CALCULATOR */
+#mortgage-center-more-calculators
+{
+	background-image:none;
+	float:right;
+	font-size:10px;
+	height:auto;
+	margin-top:6px;
+	right:10px;
+	text-align:right;
+	width:100%;
+}
 #mortgage-center-calc-input
 {
 	padding: 8px 8px;

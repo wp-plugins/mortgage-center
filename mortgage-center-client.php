@@ -71,9 +71,10 @@ class MortgageCenter_Client {
 	}
 	static function LoadContent() {
 		$news = self::GetMortgageNews();
-		$url_slug = self::$Options['url-slug'];
 		$zillowApiKey = self::$ZillowApiKey;
 		$stateAbbrev = self::$Options['state'];
+		$url_slug = self::$Options['url-slug'];
+		$blog_url = get_bloginfo('wpurl');
 		
 		if (self::$RequestedArticleName)
 			$content = self::LoadContentNews();
@@ -94,6 +95,11 @@ class MortgageCenter_Client {
 					<a href="/$url_slug/#mc-closing-costs">Closing Costs</a> |
 					<a href="/$url_slug/#mc-help">Help</a> |
 					<a href="/$url_slug/#mc-news">News</a>
+					<div id="mortgage-center-powered-by">
+						powered by
+						<br />
+						<img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgage Marketplace" />
+					</div>
 				</div>
 				<div class="mortgage-center-header-right"></div>
 			</div>
@@ -103,7 +109,11 @@ HTML;
 	}
 	static function LoadContentPrimary()
 	{
+		global $MortgageCenter_States;
+		
 		$url_slug = self::$Options['url-slug'];
+		$full_state = $MortgageCenter_States[self::$Options['state']];
+		$full_state_for_link = str_replace(' ', '_', $full_state);
 		
 		return <<<HTML
 			<a name="mc-rates"></a>
@@ -136,6 +146,9 @@ HTML;
 							<td id="mortgage-center-rates-last-51arm" class="mortgage-center-rate"></td>
 						</tr>
 					</table>
+					<div id="mortgage-center-compare-rates" class="mortgage-center-branding-link">
+						<a href="http://www.zillow.com/{$full_state_for_link}_Mortgage_Rates/">Compare $full_state Mortgage Rates</a> 
+					</div>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
 					<div class="mortgage-center-container-bottom-left mortgage-center-container-left"></div>
@@ -148,6 +161,9 @@ HTML;
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
 					<div class="mortgage-center-container-top-left mortgage-center-container-left"></div>
 					<h3>Calculate Your Monthly Payment</h3>
+					<div id="mortgage-center-more-calculators">
+						<a href="http://www.zillow.com/mortgage/calculator/Calculators.htm">More Mortgage Calculators</a>
+					</div>
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div class="mortgage-center-container-body">
@@ -194,6 +210,10 @@ HTML;
 							<td id="mortgage-center-calc-51arm-t"></td>
 						</tr>
 					</table>
+					<div class="clear"></div>
+					<div id="mortgage-center-compare-rates" class="mortgage-center-branding-link">
+						<a href="http://www.zillow.com/mortgage/">Shop for Mortgage Loans</a> 
+					</div>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
 					<div class="mortgage-center-container-bottom-left mortgage-center-container-left"></div>
