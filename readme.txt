@@ -1,4 +1,4 @@
-=== Local Market Explorer ===
+=== Mortgage Center ===
 Contributors: amattie, zillow
 Tags: zillow, closing.com, mortgages, mortgage rates
 Requires at least: 2.8

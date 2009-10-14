@@ -267,15 +267,8 @@ input#mortgage-center-calc-submit
     height: 590px;
     padding: 8px;
 }
-#ccWidgetFooter a
-{
-    font-size: 9px;
-    font-family: arial;
-    text-decoration: none;
-}
-#ccWidgetFooter a:hover
-{
-    text-decoration: underline;
+#ccSmartClosingCalculator {
+    height: 885px;
 }
 #ccWidgetFooter p
 {

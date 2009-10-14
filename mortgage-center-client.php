@@ -275,7 +275,12 @@ HTML;
 							var ccAutoloadJsOptions = { file: ["cc.widget.calculator.js"], 
 								onSuccess: function() { 
 									CC.widget.calculator("narrow", "ccFlashPlaceholder", {
-										dataService_apiKey: "AF6DD2F8-ADE8-11DE-A322-202E56D89593"
+										dataService_apiKey: "AF6DD2F8-ADE8-11DE-A322-202E56D89593",
+										header_bgGradient: "0xffffff,0xffffff", 
+										header_borderColor: "0xffffff",
+										costCallout_colors: "0xf2f7ff, 0xe6edf8",
+										costCallout_borderColor: "0xc2d1eb",
+										navigation_borderColor: "0xffffff"
 									});
 								}
 							};
