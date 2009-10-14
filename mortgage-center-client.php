@@ -98,7 +98,7 @@ class MortgageCenter_Client {
 					<div id="mortgage-center-powered-by">
 						powered by
 						<br />
-						<img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgage Marketplace" />
+						<a href="http://www.zillow.com/mortgage"><img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgages" /></a>
 					</div>
 				</div>
 				<div class="mortgage-center-header-right"></div>
