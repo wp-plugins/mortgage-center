@@ -36,48 +36,48 @@ options.
 
 == Frequently Asked Questions ==
 
-=How do I use the module after I install it?=
+= How do I use the module after I install it? =
 
 The module is loaded / activated when the URL in your browser location bar matches the format of &lt;http://www.yourblog.com/mortgage&gt;.
 In other words, to load the mortgage center, you'll want to point your browser to / link to &lt;http://www.yourblog.com/mortgage&gt;.
 
-=Can I customize the styling and display format?=
+= Can I customize the styling and display format? =
 
 Yes. All of the styles are controlled via an external CSS stylesheet named client.css (located in the 'css' folder of the plugin).
 You can easily override any of the styles in there. Be aware, however, that the default styles were created to be compliant with
 all of the branding requirements of the different APIs. It's possible that overriding any of the styles could put you out of
 compliance with the API provider(s).
 
-=National rates are displaying, but I want to display rates for the state that I live in - what steps do I need to take?=
+= National rates are displaying, but I want to display rates for the state that I live in - what steps do I need to take? =
 
 Navigate to the mortgage center settings (&lt;http://www.yourblog.com/wp-admin/options-general.php?page=mortgage-center-options&gt;),
 select the desired state in the drop-down, and then click submit. The mortgage center should now display rates for your desired state
 instead of national rates.
 
-=Do I have to show all of the modules?=
+= Do I have to show all of the modules? =
 
 No. You can turn off any of the modules via the mortgage center admin portion of your WordPress installation.
 
-=How are the rates calculated? Are they accurate?=
+= How are the rates calculated? Are they accurate? =
 
 Rates on Zillow Mortgage Marketplace are compiled from real rates being given to borrowers in real-time. These are not low teaser or
 marketing rates designed to pull you in and trick you. These are actual rates being given to real people right now. You can learn more
 at the Zillow Mortgage Marketplace's ["About Our Rates"](http://www.zillow.com/mortgage/help/AboutOurRates.htm) page.
 
-=The mortgage insurance column in the monthly payment estimate module is empty - why?=
+= The mortgage insurance column in the monthly payment estimate module is empty - why? =
 
 The mortgage insurance column will only populate if the down payment entered is less than 20.
 
-=How do I draw attention to the mortgage center?=
+= How do I draw attention to the mortgage center? =
 
 The easiest way would be to link to the plug-in from either you navigation bar or your sidebar. With version 2 of this plugin, it is
 planned to build a sidebar module that displays current rates in order to drive traffic into your mortgage center.
 
-=Can I add additional news sources?=
+= Can I add additional news sources? =
 
 Not right at this time.  If you have suggestions for other news sources or features, please amattie+mortgagecenter@gmail.com.
 
-=How do I add Zillow co-branding to the mortgage center?=
+= How do I add Zillow co-branding to the mortgage center? =
 
 Navigate to the mortgage center admin options from your Wordpress admin interface, enter your Zillow screen name in the co-brand
 field, then click submit.
