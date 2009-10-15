@@ -17,7 +17,8 @@ The Mortgage Center plug-in creates a mortgage resource center inside your WordP
 * A monthly payment calculator utilizing Zillow’s GetMonthlyPayments API
 * Closing cost estimates (courtesy of [Closing.com](http://www.closing.com))
 * A few educational mortgage articles (courtesy of [Zillow.com Help Center](http://www.zillow.com/mortgage/help/Main.htm))
-* Links to the latest blog posts from Mortgages Unzipped, Blown Mortgage, and Mortgage Reports.
+* Links to the latest blog posts from [Mortgages Unzipped](http://www.zillow.com/blog/mortgage/), 
+[Blown Mortgage](http://themortgagereports.com/), and [Mortgage Reports](http://blownmortgage.com/).
 
 The data is presented on a single page, with the default being &lt;www.yourblog.com/mortgage&gt;. However, you have the ability to
 change that URL in the event that you already have a page on your blog with that URL. You can customize which modules appear
