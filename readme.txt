@@ -3,7 +3,7 @@ Contributors: amattie, zillow
 Tags: zillow, closing.com, mortgages, mortgage rates, mortgage calculator
 Requires at least: 2.8
 Tested up to: 2.8
-Stable tag: trunk
+Stable tag: 1.0
 
 This plugin allows WordPress to load mortgage-related data from [Zillow](http://www.zillow.com) and [Closing.com](http://www.closing.com).
 

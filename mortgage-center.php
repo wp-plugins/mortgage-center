@@ -3,7 +3,7 @@
 Plugin Name: Mortgage Center
 Plugin URI: http://wordpress.org/extend/plugins/mortgage-center/
 Description: This plugin allows WordPress to load mortgage-related data from Zillow and Closing.com.
-Version: pre-1.0
+Version: 1.0
 Author: Andrew Mattie
 */
 
