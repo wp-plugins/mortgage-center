@@ -5,7 +5,7 @@ Requires at least: 2.8
 Tested up to: 2.8
 Stable tag: trunk
 
-This plugin allows WordPress to load mortgage-related data from Zillow and Closing.com.
+This plugin allows WordPress to load mortgage-related data from [Zillow](http://www.zillow.com) and [Closing.com](http://www.closing.com).
 
 == Description ==
 
@@ -15,8 +15,8 @@ The Mortgage Center plug-in creates a mortgage resource center inside your WordP
 
 * Real-time mortgage rates from Zillow’s GetRateSummary API
 * A monthly payment calculator utilizing Zillow’s GetMonthlyPayments API
-* Closing cost estimates (courtesy of Closing.com)
-* A few educational mortgage articles (courtesy of Zillow.com Help Center)
+* Closing cost estimates (courtesy of [Closing.com](http://www.closing.com))
+* A few educational mortgage articles (courtesy of [Zillow.com Help Center](http://www.zillow.com/mortgage/help/Main.htm))
 * Links to the latest blog posts from Mortgages Unzipped, Blown Mortgage, and Mortgage Reports.
 
 The data is presented on a single page, with the default being &lt;www.yourblog.com/mortgage&gt;. However, you have the ability to
