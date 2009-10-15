@@ -34,6 +34,9 @@ options.
 
 == Changelog ==
 
+= 1.0 =
+* First official release
+
 == Frequently Asked Questions ==
 
 = How do I use the module after I install it? =
@@ -84,3 +87,4 @@ field, then click submit.
 
 == Screenshots ==
 
+1. A screenshot of the module set to display national rate data.
