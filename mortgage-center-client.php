@@ -361,7 +361,16 @@ HTML;
 			$link = $news_item->get_permalink();
 			//$date = $news_item->get_date('j F Y | g:i a');
 			$source = $news_item->get_description();
-			 
+			
+			// this definitely isn't the best way to do this, but Yahoo! pipes didn't seem to support putting links into the descriptions
+			// we'll completely remove Yahoo! pipes from the equation later on.
+			if ($source == 'Mortgages Unzipped')
+				$source = '<a href="http://www.zillow.com/blog/mortgage/">' . $source . '</a>';
+			elseif ($source == 'The Mortgage Reports')
+				$source = '<a href="http://themortgagereports.com/">' . $source . '</a>';
+			elseif ($source == 'Blown Mortgage')
+				$source = '<a href="http://blownmortgage.com/">' . $source . '</a>';
+			
 			$news_html .= <<<HTML
 			<li>
 				<a href="$link" title="$title">$title</a>
