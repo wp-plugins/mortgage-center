@@ -12,6 +12,13 @@ class MortgageCenter_Admin {
 		update_option('mortgage-center-calc-price', $_POST['mc-calc-price']);
 		update_option('mortgage-center-calc-down', $_POST['mc-calc-down']);
 		update_option('mortgage-center-calc-zip', $_POST['mc-calc-zip']);
+		update_option('mortgage-center-panels-to-display', array(
+			'rates'			=> $_POST['mc-panels-rates'],
+			'calculator'	=> $_POST['mc-panels-calculator'],
+			'closing-costs'	=> $_POST['mc-panels-closing-costs'],
+			'articles'		=> $_POST['mc-panels-articles'],
+			'news'			=> $_POST['mc-panels-news']
+		));
 	}
 	static function Initialize() {
 ?>
@@ -29,12 +36,14 @@ class MortgageCenter_Admin {
 		}
 		
 		global $MortgageCenter_States;
+		
 		$saved_state = get_option('mortgage-center-state');
 		$saved_url_slug = get_option('mortgage-center-url-slug');
 		$saved_zillow_name = get_option('mortgage-center-zillow-profile-name');
 		$saved_calc_price = get_option('mortgage-center-calc-price');
 		$saved_calc_down = get_option('mortgage-center-calc-down');
 		$saved_calc_zip = get_option('mortgage-center-calc-zip');
+		$saved_panels_to_display = get_option('mortgage-center-panels-to-display');
 ?>
 		<form method="post">
 			<table class="form-table">
@@ -76,6 +85,33 @@ class MortgageCenter_Admin {
 						Price: <input type="text" id="mc-calc-price" name="mc-calc-price" value="<?= $saved_calc_price ?>" style="width: 70px; margin-right: 10px;" />
 						Percent down: <input type="text" id="mc-calc-down" name="mc-calc-down" value="<?= $saved_calc_down ?>" style="width: 30px; margin-right: 10px;" />
 						Zip: <input type="text" id="mc-calc-zip" name="mc-calc-zip" value="<?= $saved_calc_zip ?>" style="width: 50px;" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label>Panels to display</label>
+					</th>
+					<td>
+						<div>
+							<input type="checkbox" id="mc-panels-rates" name="mc-panels-rates" <?= $saved_panels_to_display['rates'] ? 'checked="checked"' : '' ?> />
+							<label for="mc-panels-rates">Rates</label>
+						</div>
+						<div>
+							<input type="checkbox" id="mc-panels-calculator" name="mc-panels-calculator" <?= $saved_panels_to_display['calculator'] ? 'checked="checked"' : '' ?> />
+							<label for="mc-panels-calculator">Calculator</label>
+						</div>
+						<div>
+							<input type="checkbox" id="mc-panels-closing-costs" name="mc-panels-closing-costs" <?= $saved_panels_to_display['closing-costs'] ? 'checked="checked"' : '' ?> />
+							<label for="mc-panels-closing-costs">Closing Costs</label>
+						</div>
+						<div>
+							<input type="checkbox" id="mc-panels-articles" name="mc-panels-articles" <?= $saved_panels_to_display['articles'] ? 'checked="checked"' : '' ?> />
+							<label for="mc-panels-articles">Articles</label>
+						</div>
+						<div>
+							<input type="checkbox" id="mc-panels-news" name="mc-panels-news" <?= $saved_panels_to_display['news'] ? 'checked="checked"' : '' ?> />
+							<label for="mc-panels-news">News</label>
+						</div>
 					</td>
 				</tr>
 			</table>

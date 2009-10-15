@@ -260,15 +260,19 @@ input#mortgage-center-calc-submit
 }
 
 /* CLOSING.COM COST CALCULATOR */
+#mortgage-center-closing-costs-iframe
+{
+	border-style: none;
+	height: 790px;
+	width: 450px;
+	overflow: hidden;
+}
 #ccWidgetWrapper
 {
     margin: 0 auto;
     width: 420px;
-    height: 590px;
-    padding: 8px;
-}
-#ccSmartClosingCalculator {
     height: 885px;
+    padding: 8px;
 }
 #ccWidgetFooter p
 {

@@ -18,7 +18,8 @@ class MortgageCenter_Client {
 			'zillow-profile-name'	=> get_option('mortgage-center-zillow-profile-name'),
 			'calc-price'			=> get_option('mortgage-center-calc-price'),
 			'calc-down'				=> get_option('mortgage-center-calc-down'),
-			'calc-zip'				=> get_option('mortgage-center-calc-zip')
+			'calc-zip'				=> get_option('mortgage-center-calc-zip'),
+			'panels-to-display'		=> get_option('mortgage-center-panels-to-display')
 		);
 		
 		if (preg_match('/' . preg_quote(self::$Options['url-slug'], '/') . '(?:\/(?P<article>[^\/]+))?\/?$/i', $_SERVER['REQUEST_URI'], $activation_matches) == 0)
@@ -78,7 +79,6 @@ class MortgageCenter_Client {
 		$zillowApiKey = self::$ZillowApiKey;
 		$stateAbbrev = self::$Options['state'];
 		$url_slug = self::$Options['url-slug'];
-		$blog_url = get_bloginfo('wpurl');
 		$zillow_profile_hash = '';
 		
 		if (self::$Options['zillow-profile-name'])
@@ -89,7 +89,7 @@ class MortgageCenter_Client {
 		else
 			$content = self::LoadContentPrimary();
 		
-		return <<<HTML
+		$html = <<<HTML
 		<script>
 			MortgageCenter.zillowApiKey = '{$zillowApiKey}';
 			MortgageCenter.state = '{$stateAbbrev}';
@@ -98,11 +98,19 @@ class MortgageCenter_Client {
 			<div class="mortgage-center-header">
 				<div class="mortgage-center-header-left"></div>
 				<div class="mortgage-center-header-middle">
-					<a href="/$url_slug/#mc-rates">Rates</a> |
-					<a href="/$url_slug/#mc-monthly-payments">Monthly Payments</a> |
-					<a href="/$url_slug/#mc-closing-costs">Closing Costs</a> |
-					<a href="/$url_slug/#mc-help">Help</a> |
-					<a href="/$url_slug/#mc-news">News</a>
+HTML;
+		if (self::$Options['panels-to-display']['rates'])
+			$html .= '<a href="/$url_slug/#mc-rates">Rates</a> | ';
+		if (self::$Options['panels-to-display']['calculator'])
+			$html .= '<a href="/$url_slug/#mc-monthly-payments">Monthly Payments</a> | ';
+		if (self::$Options['panels-to-display']['closing-costs'])
+			$html .= '<a href="/$url_slug/#mc-closing-costs">Closing Costs</a> | ';
+		if (self::$Options['panels-to-display']['articles'])
+			$html .= '<a href="/$url_slug/#mc-help">Help</a> | ';
+		if (self::$Options['panels-to-display']['news'])
+			$html .= '<a href="/$url_slug/#mc-news">News</a>';
+
+		$html .= <<<HTML
 					<div id="mortgage-center-powered-by">
 						powered by
 						<a href="http://www.zillow.com/mortgage$zillow_profile_hash"><img src="$blog_url/wp-content/plugins/mortgage-center/images/zmm_logo_small.gif" alt="Zillow Mortgages" /></a>
@@ -113,6 +121,7 @@ class MortgageCenter_Client {
 			$content
 		</div>
 HTML;
+		return $html;
 	}
 	static function LoadContentPrimary()
 	{
@@ -121,9 +130,11 @@ HTML;
 		$url_slug = self::$Options['url-slug'];
 		$news = self::GetMortgageNews();
 		$zillow_profile_hash = '';
+		$blog_url = get_bloginfo('wpurl');
 		$calc_price = self::$Options['calc-price'];
 		$calc_down = self::$Options['calc-down'];
 		$calc_zip = self::$Options['calc-zip'];
+		$html = '';
 		
 		if (self::$Options['zillow-profile-name'])
 			$zillow_profile_hash = '#{scrnnm=' . self::$Options['zillow-profile-name'] . '}';
@@ -139,7 +150,9 @@ HTML;
 			$full_state_for_link = '';
 		}
 		
-		return <<<HTML
+		if (self::$Options['panels-to-display']['rates'])
+		{
+			$html .= <<<HTML
 			<a name="mc-rates"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -179,7 +192,12 @@ HTML;
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
 				</div>
 			</div>
+HTML;
+		}
 			
+		if (self::$Options['panels-to-display']['calculator'])
+		{
+			$html .= <<<HTML
 			<a name="mc-monthly-payments"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -244,7 +262,12 @@ HTML;
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
 				</div>
 			</div>
+HTML;
+		}
 			
+		if (self::$Options['panels-to-display']['closing-costs'])
+		{
+			$html .= <<<HTML
 			<a name="mc-closing-costs"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -253,72 +276,20 @@ HTML;
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div id="mortgage-center-cc-container" class="mortgage-center-container-body">
-					<div id="ccWidgetWrapper">
-						<div id="ccSmartClosingCalculator">
-							<div id="ccFlashPlaceholder">
-								<p>
-									To use the <em>Smart</em>Closing™ Calculator, please install Flash Player for your
-									browser by clicking the button below.
-								</p>
-								<p>
-									<a href="http://www.adobe.com/go/getflashplayer">
-										<img alt="Get Adobe Flash player" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" />
-									</a>
-								</p>
-							</div>
-						</div>
-					
-						<script src="http://yui.yahooapis.com/2.8.0r4/build/yuiloader/yuiloader-min.js" type="text/javascript"></script>
-					
-						<script type="text/javascript">
-						  //<![CDATA[
-							var ccAutoloadJsOptions = { file: ["cc.widget.calculator.js"], 
-								onSuccess: function() { 
-									CC.widget.calculator("narrow", "ccFlashPlaceholder", {
-										dataService_apiKey: "AF6DD2F8-ADE8-11DE-A322-202E56D89593",
-										header_bgGradient: "0xffffff,0xffffff", 
-										header_borderColor: "0xffffff",
-										costCallout_colors: "0xf2f7ff, 0xe6edf8",
-										costCallout_borderColor: "0xc2d1eb",
-										navigation_borderColor: "0xffffff"
-									});
-								}
-							};
-						  //]]>
-						</script>
-					
-						<script src="http://www.closing.com/partner/assets/js/cc/cc.js" type="text/javascript"></script>
-					
-						<div id="ccWidgetFooter">
-							<h3>
-								<a href="http://www.closing.com">Closing.com"s</a> Disclaimer</h3>
-							<p>
-								Though ClosingCorp makes certain efforts to ensure that the results, rates, estimates,
-								reports, and other data made available on our site and through our services are
-								reasonably accurate and reliable for their intended purposes, <strong>SUCH INFORMATION
-									IS NOT GUARANTEED</strong> and may be subject to other terms and conditions.
-								Neither ClosingCorp nor any authorized licensees of our services and content assume
-								responsibility for the accuracy, timeliness, correctness, or completeness of such
-								estimates, reports, or information, virtually all of which is originated by others.</p>
-							<p>
-								As a service to our users, Closing.com incorporates rate, mortgage, and other calculators
-								on certain of its pages. The results and reports provided by these calculators are
-								intended for hypothetical, illustrative, and comparative purposes only. Calculators
-								are not intended to offer any tax, legal, or financial advice and <strong>ALL INFORMATION,
-									REPORTS, AND ESTIMATES PROVIDED ARE WITHOUT REPRESENTATION OR WARRANTY AS TO THEIR
-									RELEVANCE, ACCURACY, CORRECTNESS, OR COMPLETENESS</strong>. Please consult with
-								qualified professionals to discuss your situation. <a href="http://www.closing.com/Home/Disclaimer">
-									More</a></p>
-						</div>
-					</div>
-	
+					<iframe src="{$blog_url}/wp-content/plugins/mortgage-center/closing-costs.html" id="mortgage-center-closing-costs-iframe" scrolling="no">
+					</iframe>
 				</div>
 				<div class="mortgage-center-container-bottom mortgage-center-container-cap">
 					<div class="mortgage-center-container-bottom-left mortgage-center-container-left"></div>
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
 				</div>
 			</div>
+HTML;
+		}
 			
+		if (self::$Options['panels-to-display']['articles'])
+		{
+			$html .= <<<HTML
 			<a name="mc-help"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -344,7 +315,12 @@ HTML;
 					<div class="mortgage-center-container-bottom-right mortgage-center-container-right"></div>
 				</div>
 			</div>
+HTML;
+		}
 			
+		if (self::$Options['panels-to-display']['news'])
+		{
+			$html .= <<<HTML
 			<a name="mc-news"></a>
 			<div class="mortgage-center-container">
 				<div class="mortgage-center-container-top mortgage-center-container-cap">
@@ -359,6 +335,9 @@ HTML;
 				</div>
 			</div>
 HTML;
+		}
+		
+		return $html;
 	}
 	static function LoadContentNews()
 	{
@@ -393,9 +372,10 @@ HTML;
 		return $news_html;
 	}
 	static function Header() {
+		$blog_url = get_bloginfo('wpurl');
 		echo <<<HEAD
-			<link rel="stylesheet" type="text/css" href="{$wpurl}/wp-content/plugins/mortgage-center/css/client.css" />
-			<script src="{$wpurl}/wp-content/plugins/mortgage-center/js/client.js"></script>
+			<link rel="stylesheet" type="text/css" href="{$blog_url}/wp-content/plugins/mortgage-center/css/client.css" />
+			<script src="{$blog_url}/wp-content/plugins/mortgage-center/js/client.js"></script>
 HEAD;
 	}
 	static function Footer() {

@@ -37,6 +37,13 @@ class MortgageCenter {
 		add_option('mortgage-center-calc-price', '300000');
 		add_option('mortgage-center-calc-down', '20');
 		add_option('mortgage-center-calc-zip', '98014');
+		add_option('mortgage-center-panels-to-display', array(
+			'rates'			=> '1',
+			'calculator'	=> '1',
+			'closing-costs'	=> '1',
+			'articles'		=> '1',
+			'news'			=> '1'
+		));
 	}
 }
 ?>
