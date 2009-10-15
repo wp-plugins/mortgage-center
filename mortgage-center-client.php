@@ -100,15 +100,15 @@ class MortgageCenter_Client {
 				<div class="mortgage-center-header-middle">
 HTML;
 		if (self::$Options['panels-to-display']['rates'])
-			$html .= '<a href="/$url_slug/#mc-rates">Rates</a> | ';
+			$html .= "<a href=\"/$url_slug/#mc-rates\">Rates</a> | ";
 		if (self::$Options['panels-to-display']['calculator'])
-			$html .= '<a href="/$url_slug/#mc-monthly-payments">Monthly Payments</a> | ';
+			$html .= "<a href=\"/$url_slug/#mc-monthly-payments\">Monthly Payments</a> | ";
 		if (self::$Options['panels-to-display']['closing-costs'])
-			$html .= '<a href="/$url_slug/#mc-closing-costs">Closing Costs</a> | ';
+			$html .= "<a href=\"/$url_slug/#mc-closing-costs\">Closing Costs</a> | ";
 		if (self::$Options['panels-to-display']['articles'])
-			$html .= '<a href="/$url_slug/#mc-help">Help</a> | ';
+			$html .= "<a href=\"/$url_slug/#mc-help\">Help</a> | ";
 		if (self::$Options['panels-to-display']['news'])
-			$html .= '<a href="/$url_slug/#mc-news">News</a>';
+			$html .= "<a href=\"/$url_slug/#mc-news\">News</a>";
 
 		$html .= <<<HTML
 					<div id="mortgage-center-powered-by">
@@ -209,15 +209,17 @@ HTML;
 					<div class="mortgage-center-container-top-right mortgage-center-container-right"></div>
 				</div>
 				<div class="mortgage-center-container-body">
-					<form id="mortgage-center-calc-input">
-						<label for="mortgage-center-calc-hp">Home Price:</label>
-						<input type="text" id="mortgage-center-calc-hp" style="width: 60px;" value="$calc_price" />
-						<label for="mortgage-center-calc-pd">Percent Down:</label>
-						<input type="text" id="mortgage-center-calc-pd" style="width: 20px;" value="$calc_down" />
-						<label for="mortgage-center-calc-zip">Zip:</label>
-						<input type="text" id="mortgage-center-calc-zip" style="width: 40px;" value="$calc_zip" />
-						<input type="button" value="Calculate" id="mortgage-center-calc-submit" />
-					</form>
+					<div id="mortgage-center-calc-input-container">
+						<form id="mortgage-center-calc-input">
+							<label for="mortgage-center-calc-hp">Home Price:</label>
+							<input type="text" id="mortgage-center-calc-hp" style="width: 60px;" value="$calc_price" />
+							<label for="mortgage-center-calc-pd">Percent Down:</label>
+							<input type="text" id="mortgage-center-calc-pd" style="width: 20px;" value="$calc_down" />
+							<label for="mortgage-center-calc-zip">Zip:</label>
+							<input type="text" id="mortgage-center-calc-zip" style="width: 40px;" value="$calc_zip" />
+							<input type="button" value="Calculate" id="mortgage-center-calc-submit" />
+						</form>
+					</div>
 					<table id="mortgage-center-calculator-table" style="text-align: center; display: none;">
 						<tr>
 							<th>Loan Type</th>

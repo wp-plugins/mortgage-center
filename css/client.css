@@ -75,10 +75,9 @@ div.mortgage-center-header-middle
 }
 #mortgage-center-powered-by
 {
-	float: right;
 	font-size: 9px;
 	margin-top: 7px;
-	text-align: right;
+	text-align: center;
 }
 #mortgage-center-powered-by img
 {
@@ -221,6 +220,7 @@ div.mortgage-center-branding-link
 {
 	text-align: center;
 }
+
 /* MORTGAGE CALCULATOR */
 #mortgage-center-more-calculators
 {
@@ -233,14 +233,17 @@ div.mortgage-center-branding-link
 	text-align:right;
 	width:100%;
 }
+#mortgage-center-calc-input-container
+{
+	text-align: center;
+}
 #mortgage-center-calc-input
 {
 	padding: 8px 8px;
 }
 #mortgage-center-calc-input label, #mortgage-center-calc-input input
 {
-	float: left;
-	margin-right: 6px;
+	margin-right: 3px;
 }
 #mortgage-center-calc-hp
 {
