@@ -25,6 +25,8 @@ change that URL in the event that you already have a page on your blog with that
 on your page, as well as whether your blog displays national rates or rates for a specific state, in the plug-in admin
 options.
 
+This plug-in includes widgets from Zillow, which are subject to the [terms of use]( http://www.zillow.com/webtools/widgets/WidgetTermsOfUse.htm). Plug-in built by [Zillow.com](http://www.zillow.com).
+
 == Installation ==
 
 1. Go to your WordPress admin area, then go to the "Plugins" area, then go to "Add New".
