@@ -27,7 +27,7 @@ options.
 
 This plug-in includes widgets from Zillow, which are subject to the [terms of use](http://www.zillow.com/webtools/widgets/WidgetTermsOfUse.htm). Plug-in built by [Zillow.com](http://www.zillow.com).
 
-The plug-in also includes the SmartClosing CalculatorSM Widget, which is subject to Closing.com's [terms of use](http://www.closing.com/host-a-widget/terms-of-use.html).
+The plug-in also includes the SmartClosing Calculator (SM) Widget, which is subject to Closing.com's [terms of use](http://www.closing.com/host-a-widget/terms-of-use.html).
 
 == Installation ==
 
